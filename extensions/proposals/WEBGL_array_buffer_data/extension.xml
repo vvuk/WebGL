@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The root element should be <draft href="~~"> for draft extensions -->
+<!-- The root element should be <proposal href="~~"> for proposed extensions -->
+<!-- The root element should be <ratified href="~~"> for ratified extensions -->
+<!-- @href should be a URI relative to the WebGL extension registry at
+http://www.khronos.org/registry/webgl/extensions/
+-->
+<extension href="template/">
+  <!-- The name of the extension. This is also the string which is passed to the 
+       WebGLRenderingContext getExtension API to enable the extension. For example, if
+       the extension were OES_texture_float, then the extension would be fetched and
+       enabled with a call to getExtension("OES_texture_float")
+
+       Per WebGL convention, the 'GL_' prefix is dropped from all extension and enum
+       names, and the 'gl' prefix dropped from, and capitalization adjusted of, all
+       function names.
+  -->
+
+  <name>WEBGL_array_buffer_data</name>
+
+  <!-- The optional alternate name strings of the extension for draft exts -->
+
+  <!-- the email address of the contact of the specification -->
+
+  <!-- prefer to 'at' instead of the '@' character to reduce spam -->
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <!-- Names and email addresses of individuals who contributed to the development of
+       the specification
+  -->
+
+  <contributors>
+    <contributor>Vladimir Vukicevic (vladimir 'at' pobox.com)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>TODO <!-- extension number in registry --></number>
+
+  <depends>
+    <api version="1.0"/>
+
+    <!-- api/extension with hyperlink -->
+  </depends>
+
+  <overview>
+
+    <!-- normal free-form XHTML is allowed here -->
+
+    <div class="nonnormative">
+      <p>The <a href="http://www.khronos.org/registry/webgl/specs/latest/1.0/">WebGL 1.0 specification</a> specifies data to be uploaded to
+      WebGL using <a href="http://www.khronos.org/registry/typedarray/specs/latest/#TYPEDARRAYS">Typed Array Views</a>.  As much source data is often
+      stored directly in a portion of an <a href="http://www.khronos.org/registry/typedarray/specs/latest/#ARRAYBUFFER">ArrayBuffer</a>, it can be
+      desirable to pass a raw ArrayBuffer directly, using an
+      ArrayBuffer, a start offset, and a byte length. By doing so,
+      temporary view objects are not needed, which has benefits such
+      as reduced pressure on a garbage collection implementation.</p>
+
+      <p>This extension extends WebGL 1.0 by providing additional
+      entry points that take an ArrayBuffer, start offset and length
+      instead of an Typed Array View.  All of the original alignment
+      restrictions are preserved -- for example, if an entry point
+      would have required a Uint16Array, the start offset and length
+      must be a multiple of 2.</p>
+    </div>
+
+    <features>
+      <!-- a list of features in XHTML -->
+
+      <feature>Adds <b>bufferDataWEBGL</b> that mirrors <tt>bufferData</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>bufferSubDataWEBGL</b> that mirrors <tt>bufferSubData</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>compressedTexImage2DWEBGL</b> that mirrors <tt>compressedTexImage2D</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>compressedTexSubImage2DWEBGL</b> that mirrors <tt>compressedTexSubImage2D</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>readPixelsWEBGL</b> that mirrors <tt>readPixels</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>texImage2DWEBGL</b> that mirrors <tt>texImage2D</tt>, but takes an explicit ArrayBuffer.</feature>
+
+      <feature>Adds <b>texSubImage2DWEBGL</b> that mirrors <tt>texSubImage2D</tt>, but takes an explicit ArrayBuffer.</feature>
+
+    </features>
+  </overview>
+
+  <idl xml:space="preserve"> <!-- copied literally into a <pre> -->
+    <!-- Enums and functions introduced by the extension should be specified as
+         'const GLenum' and methods on the extension object. The extension IDL should
+         be written assuming that the typedefs in
+         <a href="../../specs/latest/webgl.idl">webgl.idl</a> and
+         <a href="../../typedarray/specs/latest/typedarrays.idl">typedarrays.idl</a>
+         have already been defined, and may implicitly reference other web platform
+         specifications.
+    -->
+module webgl {
+
+interface WEBGL_array_buffer_data {
+    void bufferDataWEBGL(GLenum target, ArrayBuffer data, GLintptr start, GLsizeiptr length, GLenum usage);
+
+    void bufferSubDataWEBGL(GLenum target, GLintptr offset, ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+    void compressedTexImage2DWEBGL(GLenum target, GLint level, GLenum internalformat,
+                                   GLsizei width, GLsizei height, GLint border,
+                                   ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+    void compressedTexSubImage2DWEBGL(GLenum target, GLint level,
+                                      GLint xoffset, GLint yoffset,
+                                      GLsizei width, GLsizei height, GLenum format,
+                                      ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+    void readPixelsWEBGL(GLint x, GLint y, GLsizei width, GLsizei height, 
+                         GLenum format, GLenum type,
+                         ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+    void texImage2DWEBGL(GLenum target, GLint level, GLenum internalformat, 
+                         GLsizei width, GLsizei height, GLint border, GLenum format, 
+                         GLenum type,
+                         ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+    void texSubImage2DWEBGL(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                            GLsizei width, GLsizei height, 
+                            GLenum format, GLenum type,
+                            ArrayBuffer data, GLintptr start, GLsizeiptr length);
+
+}; // interface WEBGL_array_buffer_data
+
+}; // module webgl
+  </idl>
+
+  <!-- new functions -->
+
+  <newfun>
+    <function name="bufferDataWEBGL" type="void">Behaves exactly like <tt>bufferData</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length.  There are no alignment restrictions on this call.</function>
+
+    <function name="bufferSubDataWEBGL" type="void">Behaves exactly like <tt>bufferSubData</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length.  There are no alignment restrictions on this call.</function>
+
+    <function name="compressedTexImage2DWEBGL" type="void">Behaves exactly like <tt>compressedTexImage2D</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length.</function>
+
+    <function name="compressedTexSubImage2DWEBGL" type="void">Behaves exactly like <tt>compressedTexSubImage2D</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length.</function>
+
+    <function name="readPixelsWEBGL" type="void">Behaves exactly like <tt>readPixels</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length. The view type restrictions in the WebGL specification translate into alignment restrictions. If a Uint16Array is required, the start and length parameters must be a multiple of 2. If a Uint32Array is required, the start and length parameters must be a multiple of 4.</function>
+
+    <function name="texImage2DWEBGL" type="void">Behaves exactly like <tt>texImage2D</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length. The view type restrictions in the WebGL specification translate into alignment restrictions. If a Uint16Array is required, the start and length parameters must be a multiple of 2. If a Uint32Array is required, the start and length parameters must be a multiple of 4.</function>
+
+    <function name="texSubImage2DWEBGL" type="void">Behaves exactly like <tt>texSubImage2D</tt> taking an <tt>ArrayBufferView</tt>, but instead specifies the data to be uploaded using an ArrayBuffer, a byte offset, and a byte length. The view type restrictions in the WebGL specification translate into alignment restrictions. If a Uint16Array is required, the start and length parameters must be a multiple of 2. If a Uint32Array is required, the start and length parameters must be a multiple of 4.</function>
+
+  </newfun>
+
+  <!-- Refer to the <http://www.opengl.org/registry/doc/template.txt> OpenGL
+       extension template for a description of these sections. These sections
+       should be eliminated for WebGL extensions simply mirroring OpenGL or
+       OpenGL ES extensions.
+  -->
+
+  <!-- these take XHTML markup as contents -->
+
+  <security/>
+
+  <ipstatus/>
+
+  <additions/>
+
+  <!-- Additions to the WebGL Specification -->
+
+  <errors/>
+
+  <newstate/>
+
+  <newimplstate/>
+
+  <!-- New Implementation-Dependent State -->
+
+  <samplecode/>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <!-- a list of revisions in any order -->
+
+    <!-- Include important changes in the evolution of the extension. It's
+         especially important to include this section if the extension is modified
+         after a version has been shipped. Consult the
+         <http://www.opengl.org/registry/doc/template.txt> OpenGL extension template
+         for an example.
+    -->
+
+    <revision date="2014/02/18">
+      <!-- a list of changes -->
+
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</extension>
